@@ -1,0 +1,741 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+	<meta charset="UTF-8">
+	<meta http-equiv="X-UA-Compatible" content="IE=edge">
+	<meta name="viewport" content="width=device-width, initial-scale=1.0">
+	<title>Whatsapp</title>
+
+</head>
+<style>
+    body {
+    
+  }
+  
+  main {
+    display: flex;
+    align-items: stretch;
+    height: 100%;
+  }
+  
+  .avatar {
+    border-radius: 50%;
+  }
+  
+  .icon {
+    padding: 8px;
+    cursor: pointer;
+    filter: invert(79%) sepia(18%) saturate(148%) hue-rotate(158deg)
+      brightness(91%) contrast(88%);
+  }
+  
+  .pin {
+    filter: invert(79%) sepia(18%) saturate(148%) hue-rotate(158deg)
+      brightness(91%) contrast(88%);
+  }
+  
+  .hidden {
+    display: none !important;
+  }
+  
+  .dropdown {
+    position: relative;
+  }
+  
+  .dropdown-content {
+    display: none;
+    position: absolute;
+    padding: 10px 0px;
+    width: 195px;
+    background-color: var(--);
+    z-index: 10;
+    border-radius: 3px;
+    /* display: flex; */
+    flex-direction: column;
+    box-shadow: 0px 8px 16px 0px rgba(0, 0, 0, 0.2);
+  }
+  
+  .dropdown-content a {
+    padding: 10px 16px;
+    color: var(--text-primary);
+  }
+  
+  .dropdown-content a:hover {
+    background-color: var(--bg-color);
+  }
+  
+  .dropdown:hover .dropdown-content {
+    display: flex;
+  }
+  .chat-message-group {
+    display: flex;
+    color: white;
+    align-items: flex-start;
+    column-gap: 8px;
+    margin-bottom: 10px;
+  }
+  
+  .emoji-toolbar {
+    /* visibility: none; */
+    /* opacity: 0; */
+    position: relative;
+  }
+  
+  .reaction-emoji-selector {
+    position: absolute;
+    top: -40px;
+    height: 60px;
+    display: flex;
+    display: none;
+    justify-content: space-between;
+    align-items: center;
+    font-size: 24px;
+    z-index: 10;
+    border-radius: 50px;
+    background-color: var(--primary);
+    /* bottom: 10px; */
+  }
+  
+  .chat-messages {
+    flex-grow: 1;
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+  }
+  
+  .chat-message-container {
+    flex-grow: 1;
+    display: flex;
+    column-gap: 6px;
+    align-items: center;
+  }
+  
+  .chat-message-container img {
+    display: none;
+  }
+  
+  .chat-message-container:hover img {
+    display: flex;
+  }
+  
+  .chat-message {
+    padding: 10px;
+    margin-bottom: 2px;
+    background-color: var(--primary);
+    border-radius: var(--border-radius);
+    /* position: relative; */
+  }
+  
+  .chat-message-sender {
+    font-weight: 600;
+  }
+  
+  .chat-message-sender:nth-of-type(2n + 1) {
+    color: red;
+  }
+  
+  .chat-message-time {
+    font-size: 11px;
+    color: #ffffff99;
+    /* margin-top: ; */
+    position: relative;
+    bottom: -6px;
+    right: -4px;
+  }
+  
+  .chat-message-avatar {
+    height: 30px;
+    border-radius: 50%;
+  }
+  .chat-tile {
+    display: flex;
+    color: var(--text-secondary);
+    height: 72px;
+    position: relative;
+    margin-bottom: 0px;
+    /* padding: 12px; */
+    column-gap: 10px;
+    align-items: center;
+  }
+  
+  .chat-tile:hover {
+    background-color: var(--primary);
+    cursor: pointer;
+  }
+  
+  .chat-tile > img {
+    height: 49px;
+    width: 49px;
+    border-radius: 50%;
+    margin: 0px 5px 0px 13px;
+  }
+  
+  .chat-tile::after {
+    content: "";
+    position: absolute;
+    left: 0;
+    bottom: 0px;
+    width: 100%;
+    height: 0.1px;
+    background-color: var(--border-color);
+  }
+  
+  .chat-tile-details {
+    flex-grow: 1;
+  
+    padding-right: 15px;
+  }
+  
+  .chat-tile-title {
+    display: flex;
+    justify-content: space-between;
+  }
+  
+  .chat-tile-title > :first-child {
+    color: var(--text-primary-strong);
+    font-size: 17px;
+  }
+  
+  .chat-tile-title > :nth-child(2) {
+    font-size: 12px;
+  }
+  
+  .chat-tile-subtitle {
+    display: flex;
+    white-space: nowrap;
+  
+    /* max-width: 100%; */
+    /* overflow: hidden; */
+    /* text-overflow: ellipsis; */
+    justify-content: space-between;
+  }
+  
+  .chat-tile-menu {
+    /* display: none; */
+  }
+  
+  .chat-tile:hover > .chat-tile-details > .chat-tile-subtitle ~ .chat-tile-menu {
+    display: inline-flexbox;
+    background-color: red;
+  }
+  #chat-window {
+    flex-grow: 2;
+  
+    display: flex;
+    flex-direction: column;
+    position: relative;
+    /* background: url(../images/chat-bg.png); */
+  }
+  
+  #chat-window-header {
+    color: white;
+    display: flex;
+
+    align-items: center;
+    column-gap: 12px;
+    height: var(--header-height);
+    padding: 15px 20px;
+    background-color: var(--primary);
+  }
+  #chat-window-header div.dp {
+    justify-content: space-between;
+    border-radius: 7565px;
+  }
+  
+  .contact-menu {
+    position: absolute;
+    right: 5px;
+  }
+  
+  #active-chat-details {
+    flex-grow: 1;
+  }
+  
+  #chat-window-contents {
+    flex-grow: 1;
+    position: relative;
+    z-index: 1;
+    overflow: auto;
+    padding: 10px;
+  }
+  
+  /* #chat-window-contents::before {
+    content: "";
+    position: absolute;
+    background-color: rgba(0, 0, 0, 0.9);
+    width: 100%;
+    height: 100%;
+    z-index: -1;
+  } */
+  
+  #compose-chat-box {
+    margin: 0px 10px;
+    background-color: var(--compose-bg-color);
+    padding-left: 12px;
+    font-size: 15px;
+  }
+  
+  #chat-window-footer {
+    display: flex;
+    /* column-gap: 10px; */
+    height: 62px;
+    width: 100%;
+    padding: 10px 25px;
+    background-color: var(--primary);
+  }
+  
+  #active-chat-details > .info {
+    color: var(--text-secondary);
+    font-size: 13px;
+  }
+  
+  .datestamp-container {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+  }
+  
+  .datestamp {
+    color: var(--text-secondary);
+    font-size: 12.5px;
+    background-color: var(--primary);
+    border-radius: var(--border-radius);
+    padding: 8px 10px;
+    margin: 13px 0px;
+  }
+  
+  .scroll-to-top-button {
+    border-radius: 50%;
+    height: 42px;
+    width: 42px;
+    background-color: var(--primary);
+    position: absolute;
+    bottom: 80px;
+    right: 20px;
+    transition: all 0.1s ease-in-out;
+    z-index: 3;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+  }
+  
+  .scroll-to-top-button-icon {
+    height: 35px;
+    width: 35px;
+  }
+  
+  .shrink {
+    height: 0;
+    width: 0;
+  }
+  :root {
+    --bg-color: #111b21;
+    --color-1: #06cf9c;
+    --color-1: #53bdeb;
+    --color-1: #00a884;
+    --green: #005c4b;
+    --green-secondary: #025144;
+    --light-grey: #2a3942;
+    --primary: #202c33;
+    --color-1: #1d282f;
+    --bg-color-secondary: #182229;
+    --color-1: #111b21;
+    --color-1: #101a20;
+    --color-1: #0b141a;
+    --color-1: #0b141a59;
+    --color-1: #000000b3;
+  
+    --text-primary: #d1d7db;
+    --text-primary-strong: #e9edef;
+    --text-secondary: #8696a0;
+  
+    --search-input-background: var(--primary);
+    --border-color: var(--light-grey);
+    --compose-bg-color: var(--light-grey);
+    --input-placeholder-color: var(--text-secondary);
+    --dropdown-color: var(--primary);
+  
+    --border-radius: 0.5rem;
+    --header-height: 59px;
+    --footer-height: 62px;
+    --searchbar-border-radius: var(--border-radius);
+  }
+  
+  ::-webkit-scrollbar {
+    width: 5px;
+  }
+  
+  ::-webkit-scrollbar-thumb {
+    background-color: var(--primary);
+  }
+  
+  ::-webkit-scrollbar-track {
+    background-color: transparent;
+  }
+  
+  * {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+    /* border: solid 0.2px pink; */
+  }
+  
+  html,
+  body {
+    font-family: "Segoe UI", "Helvetica Neue", Helvetica, "Lucida Grande", Arial,
+      Ubuntu, "Cantarell", "Fira Sans", sans-serif;
+    font-size: 14px;
+    height: 100%;
+  }
+  
+  input[type="search"] {
+    border: none;
+    outline: none;
+    flex-grow: 1;
+    color: var(--text-primary);
+    background-color: var(--primary);
+    border-radius: var(--searchbar-border-radius);
+  }
+  
+  input[type="search"]::-webkit-input-placeholder,
+  input[type="search"]::placeholder {
+    color: var(--input-placeholder-color);
+  }
+  
+  input[type="search"]::-webkit-search-cancel-button {
+    /* Remove default */
+    -webkit-appearance: none;
+  
+    height: 10px;
+    width: 10px;
+    background: red;
+    cursor: pointer;
+  }
+  
+  ul > li {
+    list-style: none;
+  }
+  
+  a {
+    text-decoration: none;
+    color: inherit;
+  }
+  #sidebar {
+    flex-grow: 1;
+    max-width: 40%;
+  
+    display: flex;
+    flex-direction: column;
+    border-right: solid 1px var(--border-color);
+  }
+  
+  #sidebar-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    height: var(--header-height);
+    background-color: var(--primary);
+    padding: 20px 15px;
+  }
+  
+  #profile-image {
+    height: 40px;
+  }
+  
+  .toolbar {
+    /* width: 190px; */
+    display: flex;
+    justify-content: space-between;
+  }
+  
+  #search-toolbar {
+    display: flex;
+    column-gap: 10px;
+    height: 49px;
+    padding: 7px 10px;
+  }
+  
+  #search-input {
+    padding-left: 30px;
+  }
+  
+  #sidebar-contents {
+    flex-grow: 1;
+    overflow: auto;
+  
+    display: flex;
+    flex-direction: column;
+  }
+  
+  .connectivity-notification {
+    padding: 12px 15px;
+    background-color: var(--bg-color-secondary);
+    display: flex;
+    align-items: center;
+    column-gap: 15px;
+    color: var(--text-secondary);
+  }
+  
+  .connectivity-notification-title {
+    color: var(--text-primary-strong);
+    font-size: 16px;
+  }
+  
+  .connectivity-notification > img {
+    filter: invert(82%) sepia(49%) saturate(1077%) hue-rotate(328deg)
+      brightness(103%) contrast(103%);
+  }
+  @media (max-width: 768px) {
+    #sidebar {
+        max-width: 100%;
+    }
+
+    #chat-window {
+        flex: 1;
+    }
+
+    #sidebar-header, #chat-window-header {
+        justify-content: center;
+        padding: 10px 5px;
+    }
+
+    #compose-chat-box {
+        padding: 5px 10px;
+    }
+}
+
+@media (max-width: 480px) {
+    main {
+        flex-direction: column;
+    }
+
+    #sidebar {
+        height: auto;
+        max-width: 100%;
+    }
+
+    #chat-window {
+        height: 100%;
+    }
+
+    #compose-chat-box {
+        font-size: 12px;
+    }
+
+    .chat-tile {
+        font-size: 14px;
+    }
+}
+</style>
+<body>
+	<main>
+
+		<!-- Sidebar -->
+		<aside id="sidebar">
+			<header id="sidebar-header">
+				<img src="data:image/jpeg;base64,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" alt="" class="avatar" id="profile-image">
+			</header>
+			<form id="search-toolbar">
+				<input type="search" name="" id="search-input" placeholder="Search or start a new chat">
+			</form>
+			</div>
+			<section id="sidebar-contents">
+				<div id="chats-list">
+					<div class="chat-tile">
+						<img src="https://picsum.photos/id/103/50" alt="" class="chat-tile-avatar">
+						<div class="chat-tile-details">
+							<div class="chat-tile-title">
+								<span>Friends 🤗</span>
+								<span>Tuesday</span>
+							</div>
+							<div class="chat-tile-subtitle">
+								<span>You: hey there! how are you?</span>
+							</div>
+						</div>
+					</div>
+					<div class="chat-tile">
+						<img src="https://picsum.photos/id/104/50" alt="" class="chat-tile-avatar">
+						<div class="chat-tile-details">
+							<div class="chat-tile-title">
+								<span>Family</span>
+								<span>10:34 Pm</span>
+							</div>
+							<div class="chat-tile-subtitle">
+								<span>Papa: You gotta be kidding me</span>
+							</div>
+						</div>
+					</div>
+					<div class="chat-tile">
+						<img src="https://picsum.photos/id/106/50" alt="" class="chat-tile-avatar">
+						<div class="chat-tile-details">
+							<div class="chat-tile-title">
+								<span>Saqib</span>
+								<span>Saturday</span>
+							</div>
+							<div class="chat-tile-subtitle">
+								<span>You do not understand what I'm </span>
+							</div>
+						</div>
+					</div>
+					<div class="chat-tile">
+						<img src="https://picsum.photos/id/110/50" alt="" class="chat-tile-avatar">
+						<div class="chat-tile-details">
+							<div class="chat-tile-title">
+								<span>Ali</span>
+								<span>Saturday</span>
+							</div>
+							<div class="chat-tile-subtitle">
+								<span>Reply in group fast</span>
+							</div>
+						</div>
+					</div>
+
+
+				</div>
+			</section>
+		</aside>
+		<!-- Sidebar ends -->
+
+		<!-- Chat window -->
+		<section id="chat-window">
+			<header id="chat-window-header">
+				
+				<img src="https://picsum.photos/id/103/50" alt="" class="avatar" id="profile-image">
+				<div id="active-chat-details">
+					<h3>Friends 🤗</h3>
+					<div class="info">You and 69 others</div>
+				</div>
+				<div>
+					
+					<a href="pro.html"><img  src="https://picsum.photos/id/103/50" alt="" class="avatar" id="profile-image"></a>
+					<div id="active-chat-details">
+				</div>
+			</header>
+			<div id="chat-window-contents">
+
+				<div class="datestamp-container">
+					<span class="datestamp">
+						03/05/2023
+					</span>
+				</div>
+				<!-- Message group 1 -->
+				<div class="chat-message-group">
+					<img src="https://picsum.photos/50" alt="" class="chat-message-avatar">
+					<div class="chat-messages">
+						<div class="chat-message-container">
+							<div class="chat-message chat-message-first">
+								<div class="chat-message-sender">zeeshan</div>
+								Hey tki haal a?
+								<span class="chat-message-time">7:22 am</span>
+							</div>
+							<div class="emoji-toolbar">
+								<img src="icons/emoji.svg" alt="" class="icon reaction-button">
+								<div class="reaction-emoji-selector">
+									<a href="#" class="icon"></a>
+									<a href="" class="icon"></a>
+									<a href="" class="icon"></a>
+									<a href="" class="icon"></a>
+									<a href="" class="icon"></a>
+									<a href="" class="icon"></a>
+								</div>
+							</div>
+						</div>
+						<div class="chat-message">
+							Are you up to some fun this weekend?
+							<span class="chat-message-time">7:22 am</span>
+						</div>
+						<div class="chat-message">
+							I'm thinking of going to the beach
+							<span class="chat-message-time">7:23 am</span>
+						</div>
+					</div>
+				</div>
+				<!-- Message group 2 -->
+				<div class="chat-message-group">
+					<img src="https://picsum.photos/id/102/50" alt="" class="chat-message-avatar">
+					<div class="chat-messages">
+						<div class="chat-message-container">
+							<div class="chat-message chat-message-first">
+								<div class="chat-message-sender">Atta-Ur-Rehman</div>
+								Sure man
+								<span class="chat-message-time">7:30 am</span>
+							</div>
+							<div class="emoji-toolbar">
+								<img src="icons/emoji.svg" alt="" class="icon reaction-button">
+								<div class="reaction-emoji-selector">
+									<a href="#" class="icon"></a>
+									<a href="" class="icon"></a>
+									<a href="" class="icon"></a>
+									<a href="" class="icon"></a>
+									<a href="" class="icon"></a>
+									<a href="" class="icon"></a>
+								</div>
+							</div>
+						</div>
+						<div class="chat-message">
+							When are you free? Let's meet at the cafe first.
+							<span class="chat-message-time">7:30 am</span>
+						</div>
+
+					</div>
+				</div>
+				<div class="chat-message-group">
+					<img src="https://picsum.photos/id/102/50" alt="" class="chat-message-avatar">
+					<div class="chat-messages">
+						<div class="chat-message-container">
+							<div class="chat-message chat-message-first">
+								<div class="chat-message-sender">Ahmad </div>
+								sure atta
+								<span class="chat-message-time">7:30 am</span>
+							</div>
+						</div>
+						<div class="chat-message">
+							I am also ready for this
+							<span class="chat-message-time">7:30 am</span>
+						</div>
+
+					</div>
+				</div>
+
+
+			</div>
+			<footer id="chat-window-footer">
+				<input type="search" name="message" id="compose-chat-box" placeholder="Type a message">
+
+	</main>
+	<script>
+  document.addEventListener('DOMContentLoaded', () => {
+    const chatWindowContents = document.getElementById('chat-window-contents');
+    const composeChatBox = document.getElementById('compose-chat-box');
+
+    // Function to add a new message
+    function addMessage(content, sender = 'You') {
+      const messageContainer = document.createElement('div');
+      messageContainer.className = 'chat-message-container';
+
+      const message = document.createElement('div');
+      message.className = 'chat-message';
+      message.innerHTML = `<strong class="chat-message-sender">${sender}</strong>: ${content}<span class="chat-message-time">${new Date().toLocaleTimeString()}</span>`;
+      
+      messageContainer.appendChild(message);
+      chatWindowContents.appendChild(messageContainer);
+
+      // Scroll to the bottom of the chat
+      chatWindowContents.scrollTop = chatWindowContents.scrollHeight;
+    }
+
+    // Event listener for sending messages
+    composeChatBox.addEventListener('keydown', (event) => {
+      if (event.key === 'Enter' && composeChatBox.value.trim() !== '') {
+        addMessage(composeChatBox.value.trim());
+        composeChatBox.value = ''; // Clear the input box
+      }
+    });
+  });
+
+
+     </script>
+</body>
+
+</html>
